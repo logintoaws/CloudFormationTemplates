@@ -1,17 +1,17 @@
 {
-	"AWSTemplateFormateVersion": "2010-09-09",
+	"AWSTemplateFormatVersion": "2010-09-09",
 	"Description": "To Create a server with JSON Code",
 	"Parameters": {
-		"KeyPair": {
+		"KeyName": {
 	
 			"Description": "Key Pair Name",
-			"Type": "AWS::EC2::KeyPair:KeyName"
+			"Type": "AWS::EC2::KeyPair::KeyName"
 		},
 		"VPC": {
 			"Description": "Chose a VPC",
 			"Type": "AWS::EC2::VPC::Id"
 		},
-		"Subnet" {
+		"Subnet": {
 			"Description": "Chose any subnet from VPC",
 			"Type" : "AWS::EC2::Subnet::Id"
 		},
@@ -19,7 +19,7 @@
 			"Description": "Chose any one instance from below",
 			"Type": "String",
 			"Default": "t2.micro",
-			"AllowedValues": ["t2.micro", "t2.small", "t2.medim"]
+			"AllowedValues": ["t2.micro", "t2.small", "t2.medium"]
 		}
 	},
 	"Mappings": {
@@ -32,13 +32,13 @@
 		"sa-east-1": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-b52890a8"},
 		"us-east-1": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-1ecae776"},
 		"us-west-1": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-d114f295"},
-		"us-west-2": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-e7527ed7"},
+		"us-west-2": {"AmazonLinuxAMIHVMEBSBacked64bit": "ami-e7527ed7"}
 		}
 	},
 	"Resources": {
 		"SecurityGroup": {
 			"Type": "AWS::EC2::SecurityGroup",
-			"properties": {
+			"Properties": {
 				"GroupDescription": "My Test Security Group",
 				"VpcId": {"Ref": "VPC"},
 				"SecurityGroupIngress": [{
@@ -49,10 +49,12 @@
 					}]
 			}
 		},
-		"Servers": {
+		"Server": {
 			"Type": "AWS::EC2::Instance",
 			"Properties": {
-				"ImageId": {"Fn::FindInMap": ["EC2RegionMap", {"Ref": "AWS::Region"}, "AmazonLinuxAMIHVMEBSBacked64bit"]},
+				"ImageId": {"Fn::FindInMap": ["EC2RegionMap", {"Ref": "AWS::Region"}, 
+
+"AmazonLinuxAMIHVMEBSBacked64bit"]},
 			"InstanceType": {"Ref": "InstanceType"},
 			"KeyName": {"Ref": "KeyName"},
 			"SecurityGroupIds": [{"Ref": "SecurityGroup"}],
@@ -60,7 +62,7 @@
 			}
 		}
 	},
-	"Outpus": {
+	"Outputs": {
 		"PublicName": {
 			"Value": {"Fn::GetAtt": ["Server", "PublicDnsName"]},
 			"Description": "Public name (connect via SSH as user ec2-user)"
